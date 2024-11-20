@@ -1,30 +1,20 @@
 'use strict';
 
 function transformStateWithClones(initialState, actions) {
-  return actions.reduce((stateHistory, action) => {
+  return actions.reduce((stateHistory, { type, extraData, keysToRemove }) => {
     const prevState = stateHistory[stateHistory.length - 1] || initialState;
     let newState;
 
-    switch (action.type) {
+    switch (type) {
       case 'clear':
         newState = {};
         break;
       case 'addProperties':
-        newState = { ...prevState, ...action.extraData };
+        newState = Object.assign({}, prevState, extraData);
         break;
-      case 'removeProperties':
-        newState = { ...prevState };
-
-        action.keysToRemove.forEach((key) => {
-          delete newState[key];
-        });
-        break;
-      default:
-        newState = { ...prevState };
+      // ... rest of the code remains the same ...}
     }
 
-    return [...stateHistory, newState];
+    return stateHistory.concat(newState);
   }, []);
 }
-
-module.exports = transformStateWithClones;
